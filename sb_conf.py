@@ -2,6 +2,7 @@
 
 import json
 import os.path
+from sb_etc import Debug
 # Simple JSON Handler
 
 
@@ -10,7 +11,7 @@ def Write(filename, config) -> bool:
     try:
         with open(filename, "w") as f:
             json.dump(config, f, indent=4)
-            print(f"Wrote configuration to {filename}.")
+            Debug(f"Wrote configuration to {filename}.")
             retVal = True
             f.close()
 
@@ -27,15 +28,15 @@ def Read(filename, default) -> dict:
     """
 
     if not os.path.isfile(filename):
-        print("Config file doesn't exist. Creating...")
+        Debug("Config file doesn't exist. Creating...")
         Write(filename, default)
-        print(f"Config file {filename} created.")
+        Debug(f"Config file {filename} created.")
         retVal = default
     else:
         try:
             with open(filename, "r") as f:
                 config = json.load(f)
-                print(f"Successfully read configuration file: {filename}.")
+                Debug(f"Successfully read configuration file: {filename}.")
                 retVal = config
                 f.close()
 
