@@ -1,4 +1,4 @@
-# Simple Bank [WIP]
+# Simple Bank
 
 ## Short description:
 ***Basic Banking system trying to replicate the operation of ATMs***
