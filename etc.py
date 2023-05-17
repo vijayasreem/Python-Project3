@@ -1,6 +1,7 @@
 from random import randint as rand
 from datetime import datetime, timedelta
 from main import Debug as debug
+from time import sleep
 # Helper functions
 
 def fixedrandom(n: int) -> int:
@@ -11,7 +12,6 @@ def fixedrandom(n: int) -> int:
 def getExpiry() -> str:
     expiry = datetime.today() + timedelta(days=1460)
     return f"{expiry.strftime('%y/%m')}"
-
 
 # Why not
 def Debug(Message: str) -> None:

@@ -2,7 +2,7 @@
 
 import json
 import os.path
-from sb_etc import Debug
+from etc import Debug
 # Simple JSON Handler
 
 

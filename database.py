@@ -1,7 +1,7 @@
 # sb_dbm.py
 import pymysql.cursors
-from sb_handler import Handler
-import sb_etc as etc
+from handler import Handler
+import etc
 import main
 # Database Manager
 
@@ -38,6 +38,7 @@ class DBHandler(Handler):
                 charset='utf8',
                 autocommit=True,
                 cursorclass=pymysql.cursors.DictCursor)
+
         except Exception as x:
             print("An error occurred while setting up connection with the MySQL Database: ", x)
             raise
@@ -47,6 +48,7 @@ class DBHandler(Handler):
     @staticmethod
     def Deinitialize() -> None:
         DBHandler.Connection.close()
+
         pass
 
     @staticmethod
@@ -60,13 +62,28 @@ class DBHandler(Handler):
         return DBHandler.Connection.cursor()
 
     @staticmethod
-    def Execute(Query : str) -> list:
-        """Returns rows in Key/Value pairs."""
+    def Execute(Query: str) -> list:
+        """Returns multiple Key/Value pairs."""
         if not DBHandler.Available():
             raise NoConnectionError()
         with DBHandler.GetCursor() as cursor:
             cursor.execute(Query)
             return cursor.fetchall()
+    @staticmethod
+    def ExecuteScalar(Query: str) -> dict:
+        """Returns a single Key/Value pair"""
+        if not DBHandler.Available():
+            raise NoConnectionError()
+        with DBHandler.GetCursor() as cursor:
+            cursor.execute(Query)
+            return cursor.fetchone()
+    @staticmethod
+    def ExecuteNQuery(Query: str) -> None:
+        """Executes query without returning the result"""
+        if not DBHandler.Available():
+            raise NoConnectionError()
+        with DBHandler.GetCursor() as cursor:
+            cursor.execute(Query)
 
     @staticmethod
     def GetDatabases() -> list:
@@ -81,14 +98,16 @@ class DBHandler(Handler):
                           "COLLATE utf8_hungarian_ci")
         DBHandler.Connection.select_db(config['database'])
         DBHandler.Execute("CREATE TABLE IF NOT EXISTS accounts("
-                          "account_number INT(24) NOT NULL PRIMARY KEY,"
+                          "account_number BIGINT(19) NOT NULL PRIMARY KEY,"
                           "name VARCHAR(30) NOT NULL,"
                           "gender TINYINT NOT NULL CHECK (gender BETWEEN 0 and 1),"
+                          "age TINYINT NOT NULL CHECK (age BETWEEN 0 and 100),"
                           "balance INT NOT NULL DEFAULT 0 CHECK (balance >= 0))")
         DBHandler.Execute("CREATE TABLE IF NOT EXISTS cards("
-                          "card_number INT(20) NOT NULL PRIMARY KEY,"
-                          "expiry VARCHAR(5) NOT NULL,"
+                          "card_number BIGINT(19) NOT NULL PRIMARY KEY,"
+                          "expiry VARCHAR(10) NOT NULL,"
                           "pin SMALLINT(4) NOT NULL,"
-                          "account_number INT(24) NOT NULL,"
+                          "cvc SMALLINT(3) NOT NULL,"
+                          "account_number BIGINT(19) NOT NULL,"
                           "FOREIGN KEY (account_number) REFERENCES "
                           "accounts(account_number))")
