@@ -6,7 +6,6 @@ import etc
 from account import Account, Gender
 from database import DBHandler as db
 from card import Card
-from subprocess import call
 import os
 #from time import sleep
 import log
@@ -34,7 +33,7 @@ def Logo():
     if importlib.util.find_spec('pyfiglet'): from pyfiglet import figlet_format as fig; print(fig("SimpleBank"))
 
 def Clear():
-    call('clear' if os.name == 'posix' else 'cls')
+    os.system('clear' if os.name == 'posix' else 'cls')
 
 # Entry point
 if __name__ == '__main__':
