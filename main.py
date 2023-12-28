@@ -7,7 +7,6 @@ from account import Account, Gender
 from database import DBHandler as db
 from card import Card
 import os
-#from time import sleep
 import log
 from time import sleep as sl
 from datetime import datetime
@@ -34,6 +33,15 @@ def Logo():
 
 def Clear():
     os.system('clear' if os.name == 'posix' else 'cls')
+
+def search_accounts(criteria):
+    query = f"SELECT * FROM accounts WHERE {criteria}"
+    results = db.ExecuteQuery(query)
+    accounts = []
+    for result in results:
+        account = Account.FromDBRecord(result)
+        accounts.append(account)
+    return accounts
 
 # Entry point
 if __name__ == '__main__':
@@ -174,7 +182,8 @@ if __name__ == '__main__':
                 2. Withdraw
                 3. Deposit
                 4. Transaction History
-                5. Make Transaction\n""")
+                5. Make Transaction
+                6. Search Accounts\n""")
                 try:
                     option = int(input("Choice: "))
                 except KeyboardInterrupt:
@@ -318,6 +327,65 @@ if __name__ == '__main__':
                                     print(f"Successfully transferred ${amount} to {target.Name} ({target.AccountNumber}).")
                                     input("\nPress Enter to continue")
                                     break
+                        case 6:
+                            while True:
+                                Clear()
+                                Logo()
+                                print("Please enter the search criteria:")
+                                print("""
+                                1. Name
+                                2. Age
+                                3. Gender\n""")
+                                try:
+                                    search_option = int(input("Option: "))
+                                except ValueError:
+                                    print("Invalid Number")
+                                except KeyboardInterrupt:
+                                    break
+                                else:
+                                    if search_option == 1:
+                                        name = input("Enter name: ")
+                                        criteria = f"name = '{name}'"
+                                        accounts = search_accounts(criteria)
+                                        if not accounts:
+                                            print("No accounts found.")
+                                        else:
+                                            print("Search Results:")
+                                            for account in accounts:
+                                                print(account)
+                                    elif search_option == 2:
+                                        age = int(input("Enter age: "))
+                                        criteria = f"age = {age}"
+                                        accounts = search_accounts(criteria)
+                                        if not accounts:
+                                            print("No accounts found.")
+                                        else:
+                                            print("Search Results:")
+                                            for account in accounts:
+                                                print(account)
+                                    elif search_option == 3:
+                                        gender = input("Enter gender (Male/Female): ")
+                                        if gender.lower() == "male":
+                                            gender = 0
+                                        elif gender.lower() == "female":
+                                            gender = 1
+                                        else:
+                                            print("Invalid gender.\nPossible values: Male, Female")
+                                            sleep(2)
+                                            continue
+                                        criteria = f"gender = {gender}"
+                                        accounts = search_accounts(criteria)
+                                        if not accounts:
+                                            print("No accounts found.")
+                                        else:
+                                            print("Search Results:")
+                                            for account in accounts:
+                                                print(account)
+                                    else:
+                                        print("Invalid option.")
+                                        sleep(2)
+                                        continue
+                                    input("\nPress Enter to continue.")
+                                    break
     #Cleanup
     db.Deinitialize()
-
