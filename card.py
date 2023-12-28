@@ -1,8 +1,6 @@
-import account
 import random
 import etc
 from database import DBHandler as db
-from account import Account
 
 class Card():
     def __init__(self, AccountNumber: int, Expiry: str = None, PIN: int = None, CVC: int = None, CardNumber: int = None):
