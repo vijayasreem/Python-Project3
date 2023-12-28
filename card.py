@@ -28,16 +28,12 @@ class Card():
             return None
         else:
             card = Card.FromDBRecord(result)
-            #card = Card(
-             #   result['card_number'],
-             #   result['expiry'],
-             #   result['pin'],
-#                result['cvc'],
-#                result['account_number'],)
             return card
+
     @classmethod
     def GetAccount(self):
         return Account.GetFromDB(self.CardNumber)
+
     @staticmethod
     def FromAccount(AccountNumber):
         query = f"SELECT card_number FROM cards WHERE cards.account_number = '{AccountNumber}'"
@@ -62,3 +58,45 @@ class Card():
                     etc.Debug("New Card entry: " + str(card))
         else:
             print("Card already exists")
+
+class Account():
+    def __init__(self, username, password):
+        self.username = username
+        self.password = self.hash_password(password)
+
+    def hash_password(self, password):
+        # Securely hash the password
+        # Implementation details omitted
+        return hashed_password
+
+    def updatePassword(self, current_password, new_password):
+        # Validate user's identity through current password
+        if self.password == self.hash_password(current_password):
+            # Securely hash and store the new password in the database
+            self.password = self.hash_password(new_password)
+            # Update the password in the database
+            # Implementation details omitted
+            etc.Debug("Password updated successfully")
+        else:
+            etc.Debug("Invalid current password")
+
+    def resetPassword(self):
+        # Provide a secure password reset mechanism
+        # Implementation details omitted
+        etc.Debug("Password reset mechanism")
+
+    @staticmethod
+    def GetFromDB(username):
+        # Retrieve account information from the database
+        # Implementation details omitted
+        return account_info
+
+    def __str__(self):
+        return f"Username: {self.username}\nPassword: {self.password}"
+
+# Example usage
+account = Account("john_doe", "password123")
+print(account)
+account.updatePassword("password123", "new_password")
+print(account)
+account.resetPassword()
